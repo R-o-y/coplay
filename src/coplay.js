@@ -288,9 +288,9 @@
             if (this._player = get('flash')) {
                 this._isFlash = true;
                 this.setFullscreenContainer(get('flashbox'));
-            } else if (this._player = query('.pw-video video')) {
+            } else if (this._player = query('.iqp-player video')) {
                 this._isFlash = false;
-                this.setFullscreenContainer(query('.pw-video'));
+                this.setFullscreenContainer(query('.iqp-player'));
             }
         },
         play: function () {
