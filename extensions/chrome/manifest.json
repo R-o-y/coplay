@@ -27,6 +27,7 @@
     "https://*.mgtv.com/*",
     "http://*.vimeo.com/*",
     "https://*.vimeo.com/*",
+    "https://videoplayer.chromecrxstore.com/",
     "activeTab",
     "webNavigation",
     "storage",

@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   const icons = '__ICONS__';
@@ -26,7 +26,7 @@
 
   // Supported websites: Youku, SohuTV, Tudou, TencentVideo, iQiyi, YouTube, ACFun, bilibili, MGTV, Vimeo
   let host = location.host.match(
-    /(?:^|\.)(youku\.com|sohu\.com|tudou\.com|qq\.com|iqiyi\.com|youtube\.com|acfun\.cn|bilibili\.com|mgtv\.com|vimeo\.com)(?:\/|$)/i
+    /(?:^|\.)(videoplayer\.chromecrxstore\.com|youku\.com|sohu\.com|tudou\.com|qq\.com|iqiyi\.com|youtube\.com|acfun\.cn|bilibili\.com|mgtv\.com|vimeo\.com)(?:\/|$)/i
   );
   if (!host) {
     return;
@@ -84,7 +84,7 @@
     );
     elem.addEventListener(
       prefix + type,
-      function(e) {
+      function (e) {
         listener.call(elem, e);
         if (!noStop) {
           e.preventDefault();
@@ -152,12 +152,6 @@
     prepare() {
       this._player = window.videoPlayer;
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.seek(sec);
     },
@@ -179,12 +173,6 @@
     prepare() {
       this._player = query('video[data-canplay="play"]');
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.currentTime = sec;
     },
@@ -204,12 +192,6 @@
   playerAdaptor.qq = {
     prepare() {
       this._player = window.PLAYER;
-    },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
     },
     seek(sec) {
       this._player.seekTo(sec);
@@ -232,12 +214,6 @@
     prepare() {
       this._player = query('.iqp-player video');
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.currentTime = sec;
     },
@@ -255,17 +231,8 @@
     prepare() {
       this._player = window._player;
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.seek(sec);
-    },
-    isReady() {
-      return true;
     },
     getTime() {
       return this._player.currentTime;
@@ -294,9 +261,6 @@
     seek(sec) {
       this._player.seekTo(sec, true);
     },
-    isReady() {
-      return true;
-    },
     getTime() {
       return this._player.getCurrentTime();
     },
@@ -308,17 +272,8 @@
     prepare() {
       this._player = window.player;
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.seek(sec);
-    },
-    isReady() {
-      return true;
     },
     getTime() {
       return this._player.currentTime;
@@ -337,17 +292,8 @@
         });
       }
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.seek(sec);
-    },
-    isReady() {
-      return true;
     },
     getTime() {
       return this._player.getCurrentTime();
@@ -355,6 +301,17 @@
     toggleFullscreen() {
       query('.bilibili-player-video-btn-fullscreen').click();
     }
+  };
+  playerAdaptor.videoplayer = {
+    prepare() {
+      this._player = get('myVideo');
+    },
+    seek(sec) {
+      this._player.currentTime = sec;
+    },
+    getTime() {
+      return this._player.currentTime;
+    },
   };
   playerAdaptor.vimeo = {
     prepare() {
@@ -376,17 +333,8 @@
         });
       }
     },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
-    },
     seek(sec) {
       this._player.seekTo(sec);
-    },
-    isReady() {
-      return true;
     },
     getTime() {
       return this._player.currentTime;
@@ -398,12 +346,6 @@
   playerAdaptor.mgtv = {
     prepare() {
       this._player = MGTVPlayer.getPlayer();
-    },
-    play() {
-      this._player.play();
-    },
-    pause() {
-      this._player.pause();
     },
     seek(sec) {
       this._player.seek(sec);
@@ -429,6 +371,15 @@
         this['on' + type](...args);
       }
     },
+    isReady() {
+      return true;
+    },
+    play() {
+      this._player.play();
+    },
+    pause() {
+      this._player.pause();
+    },
     init() {
       this.prepare();
       this.initFullscreen();
@@ -448,7 +399,7 @@
     disposeFullscreen() {
       off(document, 'fullscreenchange', this._fullscreenChangeHandler);
     },
-    toggleFullscreen() {}
+    toggleFullscreen() { }
   };
 
   function initPlayer(done) {
@@ -475,7 +426,7 @@
   function initUI() {
     let main = create('article', document.body, {
       id: id,
-      className: coplayOptions.autoActivate === false ? '' : 'active'
+      className: coplayOptions.autoActivate ? 'active' : ''
     });
 
     const DRAGGING_CLASS = 'coplay-dragging';
@@ -484,7 +435,7 @@
       innerHTML: `${icons['heart']}`,
       title: 'Click to toggle, drag to move the control bar'
     });
-    on(toggle, 'click', function() {
+    on(toggle, 'click', function () {
       if (!main.classList.contains(DRAGGING_CLASS)) {
         main.classList.toggle('active');
       }
@@ -507,23 +458,23 @@
       placeholder: 'Peer ID',
       readOnly: true
     });
-    on(local, 'focus', function() {
+    on(local, 'focus', function () {
       this.select();
     });
-    on(local, 'click', () => {});
+    on(local, 'click', () => { });
 
     let remote = create('input', main, {
       id: getId('remote'),
       type: 'text',
       placeholder: 'Remote peer ID'
     });
-    on(remote, 'click', () => {});
+    on(remote, 'click', () => { });
 
     let connect = create('button', main, {
       id: getId('connect'),
       innerHTML: `${icons['plug']}`
     });
-    on(connect, 'click', function() {
+    on(connect, 'click', function () {
       coplay.connect(remote.value);
     });
 
@@ -532,7 +483,7 @@
       hidden: true,
       innerHTML: `${icons['cancel']}`
     });
-    on(disconnect, 'click', function() {
+    on(disconnect, 'click', function () {
       coplay.disconnect();
     });
 
@@ -541,7 +492,7 @@
       innerHTML: `${icons['play']}`,
       title: 'Play'
     });
-    on(play, 'click', function() {
+    on(play, 'click', function () {
       coplay.player.play();
       coplay.remote.send(pack('PLAY'));
     });
@@ -551,7 +502,7 @@
       innerHTML: `${icons['pause']}`,
       title: 'Pause'
     });
-    on(pause, 'click', function() {
+    on(pause, 'click', function () {
       coplay.player.pause();
       coplay.remote.send(pack('PAUSE'));
     });
@@ -561,10 +512,10 @@
       innerHTML: `${icons['sync']}`,
       title: 'Sync with me'
     });
-    on(sync, 'click', function() {
+    on(sync, 'click', function () {
       let time = coplay.player.getTime();
-      coplay.player.seek(time);
       coplay.remote.send(pack('SEEK', time));
+      coplay.player.seek(time);
     });
 
     let restart = create('button', main, {
@@ -572,7 +523,7 @@
       innerHTML: `${icons['restart']}`,
       title: 'Restart'
     });
-    on(restart, 'click', function() {
+    on(restart, 'click', function () {
       if (coplay.player.restart) {
         coplay.player.restart();
       } else {
@@ -587,7 +538,7 @@
       innerHTML: `${icons['expand']}${icons['compress']}`,
       title: 'Toggle fullscreen'
     });
-    on(fullscreen, 'click', function() {
+    on(fullscreen, 'click', function () {
       coplay.player.toggleFullscreen();
     });
 
@@ -612,7 +563,7 @@
         title: 'Start video call',
         disabled: true
       });
-      on(call, 'click', function() {
+      on(call, 'click', function () {
         coplay.call(coplay.ui.remote.value);
       });
       coplay.ui.call = call;
@@ -623,7 +574,7 @@
         hidden: true,
         title: 'End video call'
       });
-      on(hangUp, 'click', function() {
+      on(hangUp, 'click', function () {
         coplay.hangUp();
       });
       coplay.ui.hangUp = hangUp;
@@ -663,7 +614,12 @@
       href: url
     });
 
-    let { protocol, hostname, pathname, port } = a;
+    let {
+      protocol,
+      hostname,
+      pathname,
+      port
+    } = a;
     return {
       protocol,
       host: hostname,
@@ -681,42 +637,81 @@
       key: 'kl2e8piw363qsemi',
       config: {
         // free servers from https://gist.github.com/yetithefoot/7592580
-        iceServers: [
-          { url: 'stun:stun.turnservers.com:3478' },
-          { url: 'stun:stun01.sipphone.com' },
-          { url: 'stun:stun.ekiga.net' },
-          { url: 'stun:stun.fwdnet.net' },
-          { url: 'stun:stun.ideasip.com' },
-          { url: 'stun:stun.iptel.org' },
-          { url: 'stun:stun.rixtelecom.se' },
-          { url: 'stun:stun.schlund.de' },
-          { url: 'stun:stun.l.google.com:19302' },
-          { url: 'stun:stun1.l.google.com:19302' },
-          { url: 'stun:stun2.l.google.com:19302' },
-          { url: 'stun:stun3.l.google.com:19302' },
-          { url: 'stun:stun4.l.google.com:19302' },
-          { url: 'stun:stunserver.org' },
-          { url: 'stun:stun.softjoys.com' },
-          { url: 'stun:stun.voiparound.com' },
-          { url: 'stun:stun.voipbuster.com' },
-          { url: 'stun:stun.voipstunt.com' },
-          { url: 'stun:stun.voxgratia.org' },
-          { url: 'stun:stun.xten.com' },
-          {
-            url: 'turn:numb.viagenie.ca',
-            credential: 'muazkh',
-            username: 'webrtc@live.com'
-          },
-          {
-            url: 'turn:192.158.29.39:3478?transport=udp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-          },
-          {
-            url: 'turn:192.158.29.39:3478?transport=tcp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-          }
+        iceServers: [{
+          url: 'stun:stun.turnservers.com:3478'
+        },
+        {
+          url: 'stun:stun01.sipphone.com'
+        },
+        {
+          url: 'stun:stun.ekiga.net'
+        },
+        {
+          url: 'stun:stun.fwdnet.net'
+        },
+        {
+          url: 'stun:stun.ideasip.com'
+        },
+        {
+          url: 'stun:stun.iptel.org'
+        },
+        {
+          url: 'stun:stun.rixtelecom.se'
+        },
+        {
+          url: 'stun:stun.schlund.de'
+        },
+        {
+          url: 'stun:stun.l.google.com:19302'
+        },
+        {
+          url: 'stun:stun1.l.google.com:19302'
+        },
+        {
+          url: 'stun:stun2.l.google.com:19302'
+        },
+        {
+          url: 'stun:stun3.l.google.com:19302'
+        },
+        {
+          url: 'stun:stun4.l.google.com:19302'
+        },
+        {
+          url: 'stun:stunserver.org'
+        },
+        {
+          url: 'stun:stun.softjoys.com'
+        },
+        {
+          url: 'stun:stun.voiparound.com'
+        },
+        {
+          url: 'stun:stun.voipbuster.com'
+        },
+        {
+          url: 'stun:stun.voipstunt.com'
+        },
+        {
+          url: 'stun:stun.voxgratia.org'
+        },
+        {
+          url: 'stun:stun.xten.com'
+        },
+        {
+          url: 'turn:numb.viagenie.ca',
+          credential: 'muazkh',
+          username: 'webrtc@live.com'
+        },
+        {
+          url: 'turn:192.158.29.39:3478?transport=udp',
+          credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+          username: '28224511:1379330808'
+        },
+        {
+          url: 'turn:192.158.29.39:3478?transport=tcp',
+          credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+          username: '28224511:1379330808'
+        }
         ]
       }
     };
@@ -746,7 +741,7 @@
 
     let peer = new Peer(peerOptions);
 
-    peer.on('open', function(id) {
+    peer.on('open', function (id) {
       coplay.ui.local.value = id;
     });
 
@@ -816,7 +811,7 @@
       return location.host + location.pathname;
     }
 
-    c.on('data', function(p) {
+    c.on('data', function (p) {
       let player = coplay.player;
       switch (p.type) {
         case 'REQ':
@@ -826,7 +821,7 @@
           round = Date.now() - start;
           count++;
           elapsed += round;
-          setTimeout(function() {
+          setTimeout(function () {
             heartBeat(c);
           }, 1000);
           break;
@@ -843,7 +838,7 @@
           console.log('Remote: ' + p.data);
           break;
         case 'SEEK':
-          player.seek(parseInt(p.data, 10));
+          player.seek(parseFloat(p.data) + round / 2.0);
           break;
         case 'PAUSE':
           player.pause();
@@ -857,7 +852,7 @@
     heartBeat();
     checkPath();
 
-    c.on('close', function() {
+    c.on('close', function () {
       ui.remote.value = '';
       ui.remote.disabled = false;
       ui.connect.hidden = false;
@@ -868,20 +863,21 @@
       }
 
       coplay.connection = null;
+      initPeer();
     });
   }
 
-  coplay.init = function() {
+  coplay.init = function () {
     let main = get(id);
     if (!main) {
-      initPlayer(function() {
+      initPlayer(function () {
         initUI();
         initPeer();
       });
     }
   };
 
-  coplay.setDisabled = function(isDisabled) {
+  coplay.setDisabled = function (isDisabled) {
     let ui = coplay.ui;
     ui.play.disabled = isDisabled;
     ui.pause.disabled = isDisabled;
@@ -890,27 +886,27 @@
     ui.fullscreen.disabled = isDisabled;
   };
 
-  coplay.enable = function() {
+  coplay.enable = function () {
     coplay.setDisabled(false);
   };
 
-  coplay.disable = function() {
+  coplay.disable = function () {
     coplay.setDisabled(true);
   };
 
-  coplay.connect = function(remote) {
+  coplay.connect = function (remote) {
     let c = coplay.peer.connect(remote, {
       label: 'coplay',
       serialization: 'json',
       reliable: false
     });
 
-    c.on('open', function() {
+    c.on('open', function () {
       connect(c);
     });
   };
 
-  coplay.disconnect = function() {
+  coplay.disconnect = function () {
     let c = coplay.connection;
     if (c) {
       c.close();
@@ -946,8 +942,11 @@
     });
     coplayDrag(remoteVideo);
     coplayDrag(localVideo);
-    Object.assign(coplay.ui, { remoteVideo, localVideo });
-    on(document, 'fullscreenchange', function() {
+    Object.assign(coplay.ui, {
+      remoteVideo,
+      localVideo
+    });
+    on(document, 'fullscreenchange', function () {
       if (remoteVideo.src) {
         remoteVideo.play();
       }
@@ -957,12 +956,11 @@
     });
   }
 
-  coplay.call = function(remote) {
-    getUserMedia(
-      {
-        video: true,
-        audio: true
-      },
+  coplay.call = function (remote) {
+    getUserMedia({
+      video: true,
+      audio: true
+    },
       stream => {
         coplay.stream = stream;
         initVideoCallPlayers();
@@ -980,7 +978,7 @@
     );
   };
 
-  coplay.hangUp = function() {
+  coplay.hangUp = function () {
     if (coplay.media) {
       coplay.media.close();
     }
