@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/Justineo/coplay/issues"
   },
-  "homepage": "https://github.com/Justineo/coplay"
+  "homepage": "https://github.com/Justineo/coplay",
+  "dependencies": {
+    "gulp-livereload": "^4.0.2"
+  }
 }

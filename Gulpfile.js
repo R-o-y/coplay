@@ -5,6 +5,7 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var pack = require('./package.json');
 var version = pack.version;
+var livereload = require('gulp-livereload');
 
 gulp.task('icons', function() {
   return gulp
@@ -39,7 +40,7 @@ gulp.task(
   'cp',
   gulp.series('res', function() {
     return gulp
-      .src(['./src/*', '!./src/coplay.js'])
+      .src(['./src/**/*', '!./src/coplay.js'])
       .pipe(gulp.dest('./extensions/chrome'))
       .pipe(gulp.dest('./extensions/firefox'));
   })
@@ -100,3 +101,8 @@ gulp.task(
   gulp.series('pack-chrome-extension', 'pack-firefox-addon')
 );
 gulp.task('default', gulp.series('extensions'));
+
+gulp.task('watch', function() {
+  livereload.listen();
+  gulp.watch('./src/**/*', gulp.series('default'));
+});

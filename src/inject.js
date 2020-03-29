@@ -26,6 +26,14 @@
     elem.href = url;
     document.getElementsByTagName('head')[0].appendChild(elem);
   }
+  
+  function loadPng(url) {
+    var elem = document.createElement('img');
+    elem.style = "display: none";
+    elem.id = "hidden_icon";
+    elem.src = url
+    document.getElementsByTagName('head')[0].appendChild(elem);
+  }
 
   function url(file) {
     return chrome.extension.getURL(file);
@@ -56,6 +64,7 @@
     } else {
       data('coplay', true);
       loadStyle(url('coplay.css'));
+      loadPng(url('coplay.png'));
       loadScript(url('peer.js'), () => {
         loadScript(url('drag.js'), () => {
           loadScript(url('coplay.js'));

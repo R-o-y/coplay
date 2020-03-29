@@ -26,12 +26,17 @@
 
   // Supported websites: Youku, SohuTV, Tudou, TencentVideo, iQiyi, YouTube, ACFun, bilibili, MGTV, Vimeo
   let host = location.host.match(
-    /(?:^|\.)(videoplayer\.chromecrxstore\.com|youku\.com|sohu\.com|tudou\.com|qq\.com|iqiyi\.com|youtube\.com|acfun\.cn|bilibili\.com|mgtv\.com|vimeo\.com)(?:\/|$)/i
+    /(?:^|\.)(youku\.com|sohu\.com|tudou\.com|qq\.com|iqiyi\.com|youtube\.com|acfun\.cn|bilibili\.com|mgtv\.com|vimeo\.com)(?:\/|$)/i
   );
-  if (!host) {
+  let is_local_video_player = location.protocol === 'chrome-extension:'
+  if (!host && !is_local_video_player) {
     return;
   }
-  host = host[1].split('.')[0];
+  if (is_local_video_player) {
+    host = 'local_video_player'
+  } else {
+    host = host[1].split('.')[0];
+  }
 
   /**
    * Common utilis
@@ -302,7 +307,7 @@
       query('.bilibili-player-video-btn-fullscreen').click();
     }
   };
-  playerAdaptor.videoplayer = {
+  playerAdaptor.local_video_player = {
     prepare() {
       this._player = get('myVideo');
     },
@@ -432,7 +437,7 @@
     const DRAGGING_CLASS = 'coplay-dragging';
     let toggle = create('button', main, {
       id: getId('toggle'),
-      innerHTML: `${icons['heart']}`,
+      innerHTML: `<img src="${document.getElementById('hidden_icon').src}" id="icon" style="height: 50%; margin-top: 25%; vertical-align: inherit;">`,
       title: 'Click to toggle, drag to move the control bar'
     });
     on(toggle, 'click', function () {
@@ -556,36 +561,36 @@
       fullscreen
     };
 
-    if (location.protocol === 'https:') {
-      let call = create('button', main, {
-        id: getId('call'),
-        innerHTML: `${icons['call']}`,
-        title: 'Start video call',
-        disabled: true
-      });
-      on(call, 'click', function () {
-        coplay.call(coplay.ui.remote.value);
-      });
-      coplay.ui.call = call;
+    // if (location.protocol === 'https:') {
+    //   let call = create('button', main, {
+    //     id: getId('call'),
+    //     innerHTML: `${icons['call']}`,
+    //     title: 'Start video call',
+    //     disabled: true
+    //   });
+    //   on(call, 'click', function () {
+    //     coplay.call(coplay.ui.remote.value);
+    //   });
+    //   coplay.ui.call = call;
 
-      let hangUp = create('button', main, {
-        id: getId('hang-up'),
-        innerHTML: `${icons['cancel']}`,
-        hidden: true,
-        title: 'End video call'
-      });
-      on(hangUp, 'click', function () {
-        coplay.hangUp();
-      });
-      coplay.ui.hangUp = hangUp;
+    //   let hangUp = create('button', main, {
+    //     id: getId('hang-up'),
+    //     innerHTML: `${icons['cancel']}`,
+    //     hidden: true,
+    //     title: 'End video call'
+    //   });
+    //   on(hangUp, 'click', function () {
+    //     coplay.hangUp();
+    //   });
+    //   coplay.ui.hangUp = hangUp;
 
-      create('style', document.body, {
-        textContent: `
-                    #coplay.active {
-                        width: 46em !important;
-                    }`
-      });
-    }
+    //   create('style', document.body, {
+    //     textContent: `
+    //                 #coplay.active {
+    //                     width: 46em !important;
+    //                 }`
+    //   });
+    // }
 
     // enable after ad stops
     if (!coplay.player.isReady()) {
@@ -715,8 +720,6 @@
         ]
       }
     };
-
-    console.log(coplayOptions);
 
     let server = coplayOptions.server;
     if (server) {

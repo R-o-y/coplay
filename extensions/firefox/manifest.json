@@ -37,12 +37,14 @@
     "drag.js",
     "coplay.js",
     "coplay.css",
-    "coplay.woff"
+    "coplay.woff",
+    "coplay.png"
   ],
   "browser_action": {
     "default_icon": {
       "128": "coplay.png"
-    }
+    },
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": [

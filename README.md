@@ -28,7 +28,7 @@ After establishing the connection, both users can perform pause/resume/seek/rest
 
 For HTTPS sites, users can use video calls to video chat with each other while watching videos. *You might need to put your headphones on while video chatting because Coplay has no <abbr>AEC</abbr>(acoustic echo cancellation) support. (Help needed)*
 
-![Coplay](coplay.png)
+![Coplay](demo.png)
 
 ## Options
 

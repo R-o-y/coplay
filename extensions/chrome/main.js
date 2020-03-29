@@ -44,6 +44,11 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
   }
 });
 
-chrome.browserAction.onClicked.addListener(inject);
+/* 
+ * Previous version: click extesnion icon to execute inject method
+ * New version: click buttons in the popup
+ */
+// chrome.browserAction.onClicked.addListener(inject);
+
 console.log('Action injector bound.');
 checkAutoInject();
